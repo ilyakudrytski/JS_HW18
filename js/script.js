@@ -14,44 +14,108 @@
 На кнопку подробнее (вывести данные в модальном окне о “названии”, “авторе”, “количестве страниц”).*/
 
 class Book {
-    constructor(bookName, author, id, numbPages) {
+    constructor(bookName, author, numbPages, id) {
+
         this._bookName = bookName;
         this._author = author;
         this._id = id;
         this._numbPages = numbPages;
-        this._list = list;
+        this._id = ++Book.counter;
     }
+
+    static counter = 0;
+    static array = [];
 }
 
 class TravelBook extends Book {
-    constructor(bookName, author, id, numbPages, wrapType) {
-        super(bookName, author, id, numbPages);
+    constructor(bookName, author, numbPages, wrapType, id) {
+        super(bookName, author, numbPages, id);
         this._wrapType = wrapType;
     }
     getFullInfo() {
-        return `Book name: ${bookName}, author: ${author}, number of pages: ${numbPages}`
+        return `Book name: ${this._bookName}, author: ${this._author}, number of pages: ${this._numbPages}`
     }
-    delete(key) {
-        delete this._list[key];
+    delBook(value) {
+        Book.array.splice(value, 1);
     }
 }
 
 class Comics extends Book {
-    constructor(bookName, author, id, numbPages, issueNumber) {
-        super(bookName, author, id, numbPages);
+    constructor(bookName, author, numbPages, issueNumber, id) {
+        super(bookName, author, numbPages, id);
         this._issueNumber = issueNumber;
     }
     getFullInfo() {
-        return `Comics name: ${bookName}, author: ${author}, number of pages: ${numbPages}`
+        return `Comics name: ${this._bookName}, author: ${this._author}, number of pages: ${this._numbPages}`
     }
+    delBook(value) {
+        Book.array.splice(value, 1);
+    }
+
 }
 
-const travelBookName = document.getElementById('title');
-const travelBookAuthor = document.getElementById('author');
-const travelBookPages = document.getElementById('count');
-const travelBookWrap = document.getElementById('type-wrapper');
+const travelForm = document.getElementById('books-travel');
+const comicsForm = document.getElementById('books-comics');
+const btnAddBook = document.querySelectorAll('input[type="submit"]');
+let ulEl = document.getElementById('list-books');
 
-const comicsName = document.getElementById('title-c');
-const comicsAuthor = document.getElementById('author-c');
-const comicsPages = document.getElementById('count-c');
-const comicsNumber = document.getElementById('type-wrapper-c');
+btnAddBook[0].addEventListener('click', (event) => {
+    event.preventDefault();
+    renderBook(travelForm, TravelBook);
+
+})
+
+btnAddBook[1].addEventListener('click', (event) => {
+    event.preventDefault();
+    renderBook(comicsForm, Comics);
+})
+
+function renderBook(form, bookType) {
+    let array = [];
+    let input = form.querySelectorAll('input[type="text"]');
+
+    input.forEach(elem => {
+        array.push(elem.value);
+    })
+
+    let bookEl = new bookType(array[0], array[1], array[2], array[3], Book.counter);
+    Book.array.push(bookEl);
+    ulEl.innerHTML += `<ul>
+                         <li>${bookEl._bookName}</li>
+                         <li>${bookEl._author}</li>
+                         <li><button id="${Book.counter + 'del'}" class="delete">удалить</button> <button id="${Book.counter}" class="info">подробнее</button></li>
+                     </ul>`;
+    form.reset();
+
+    getInfo();
+    deleteEl();
+
+    console.log(Book.array)
+}
+
+function getInfo() {
+    let btnInfo = document.querySelectorAll('.info');
+    btnInfo.forEach(btn => {
+        btn.addEventListener('click', () => {
+            Book.array.forEach(elem => {
+                if (Number(btn.id) === elem._id) {
+                    alert(elem.getFullInfo());
+                }
+            })
+        })
+    })
+}
+
+function deleteEl() {
+    let btnDelete = document.querySelectorAll('.delete');
+    btnDelete.forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.closest('ul').remove();
+            Book.array.map((elem, index) => {
+                if (btn.id === elem._id + 'del') {
+                    return elem.delBook(index);
+                }
+            })
+        })
+    })
+}
