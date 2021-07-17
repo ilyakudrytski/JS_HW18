@@ -13,46 +13,10 @@
 На кнопку удалить (повесить функционал удаления книги).
 На кнопку подробнее (вывести данные в модальном окне о “названии”, “авторе”, “количестве страниц”).*/
 
-class Book {
-    constructor(bookName, author, numbPages, id) {
 
-        this._bookName = bookName;
-        this._author = author;
-        this._id = id;
-        this._numbPages = numbPages;
-        this._id = ++Book.counter;
-    }
 
-    static counter = 0;
-    static array = [];
-}
 
-class TravelBook extends Book {
-    constructor(bookName, author, numbPages, wrapType, id) {
-        super(bookName, author, numbPages, id);
-        this._wrapType = wrapType;
-    }
-    getFullInfo() {
-        return `Book name: ${this._bookName}, author: ${this._author}, number of pages: ${this._numbPages}`
-    }
-    delBook(value) {
-        Book.array.splice(value, 1);
-    }
-}
 
-class Comics extends Book {
-    constructor(bookName, author, numbPages, issueNumber, id) {
-        super(bookName, author, numbPages, id);
-        this._issueNumber = issueNumber;
-    }
-    getFullInfo() {
-        return `Comics name: ${this._bookName}, author: ${this._author}, number of pages: ${this._numbPages}`
-    }
-    delBook(value) {
-        Book.array.splice(value, 1);
-    }
-
-}
 
 const travelForm = document.getElementById('books-travel');
 const comicsForm = document.getElementById('books-comics');
